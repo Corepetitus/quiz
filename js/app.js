@@ -463,7 +463,7 @@ function submitLead(e) {
   const payload = {
     email: email,
     phone: phone,
-    quiz_answers: answers,
+    quiz: answers,
     source: 'corepetitus_quiz'
   };
 
