@@ -4,11 +4,17 @@
 
 let stepIndex = 0;
 const answers = {};
+let isTransitioning = false;
 
 const content = document.getElementById('quiz-content');
 const progressBar = document.querySelector('.progress-bar');
 const stepCurrent = document.getElementById('step-current');
 const stepTotal = document.getElementById('step-total');
+const backBtn = document.getElementById('back-btn');
+
+backBtn.addEventListener('click', prevStep);
+
+const HIDDEN_TYPES = ['loading', 'info', 'analysis', 'lead', 'thankyou'];
 
 /* =====================
    STEPS COUNT (be info / loading / analysis)
@@ -25,6 +31,8 @@ stepTotal.textContent = visibleSteps.length; // + lead form
 ===================== */
 
 document.body.style.minHeight = '100vh';
+
+trackQuizStart(); // ✅ QUIZ START
 renderStep();
 
 /* =====================
@@ -40,6 +48,7 @@ function renderStep() {
   }
 
   updateProgress();
+  updateBackButton();
   content.innerHTML = '';
 
   switch (step.type) {
@@ -72,8 +81,10 @@ function renderStep() {
       return;
       
     case 'lead':
+      trackQuizComplete(); // QUIZ COMPLETE
       renderLeadForm();
       return;
+
     
     case 'thankyou':
       renderThankYou(step);
@@ -134,6 +145,7 @@ function renderDynamicGrid(step) {
   `;
 }
 
+
 function renderTable(step) {
   answers[step.id] = [];
 
@@ -176,18 +188,25 @@ function renderTable(step) {
     <button class="next-btn primary-btn" disabled onclick="nextStep()">Tęsti →</button>
   `;
 
-  // 🔥 DEFAULT: pažymim visus
+  // ✅ DEFAULT: pažymim visus (SU TEISINGAIS day/time)
   setTimeout(() => {
-    const table = document.querySelector('.time-table');
+    const table = document.querySelector(`.time-table[data-step="${step.id}"]`);
     const checkboxes = table.querySelectorAll('[data-time]');
     const nextBtn = content.querySelector('.next-btn');
 
+    answers[step.id] = [];
+
     checkboxes.forEach(cb => {
       cb.checked = true;
-      answers[step.id].push({
-        day: cb.closest('td').cellIndex,
-        time: cb.closest('tr').firstChild.textContent
-      });
+
+      const td = cb.closest('td');
+      const tr = cb.closest('tr');
+
+      const dayIndex = td.cellIndex - 1; // nes 0 yra laiko stulpelis
+      const dayName = step.days[dayIndex];
+      const timeText = tr.querySelector('td').textContent.trim();
+
+      answers[step.id].push({ day: dayName, time: timeText });
     });
 
     nextBtn.disabled = false;
@@ -199,22 +218,30 @@ function toggleSelectAll(stepId, el) {
   const checkboxes = table.querySelectorAll('[data-time]');
   const nextBtn = content.querySelector('.next-btn');
 
+  const step = quizSteps.find(s => s.id === stepId);
   answers[stepId] = [];
 
   if (el.checked) {
     checkboxes.forEach(cb => {
       cb.checked = true;
-      answers[stepId].push({
-        day: cb.closest('td').cellIndex,
-        time: cb.closest('tr').firstChild.textContent
-      });
+
+      const td = cb.closest('td');
+      const tr = cb.closest('tr');
+
+      const dayIndex = td.cellIndex - 1;
+      const dayName = step.days[dayIndex];
+      const timeText = tr.querySelector('td').textContent.trim();
+
+      answers[stepId].push({ day: dayName, time: timeText });
     });
+
     nextBtn.disabled = false;
   } else {
-    checkboxes.forEach(cb => cb.checked = false);
+    checkboxes.forEach(cb => (cb.checked = false));
     nextBtn.disabled = true;
   }
 }
+
 
 
 function renderInfo(step) {
@@ -235,6 +262,8 @@ function renderInfo(step) {
 }
 
 function renderLoading(step) {
+  trackQuizLoading('matching', step.from);
+
   let count = step.from;
   const startTime = Date.now();
   const minDuration = 2500;
@@ -402,18 +431,49 @@ function validateTimeSelection(stepId) {
 //   checkboxes.forEach(c => c.checked = cb.checked);
 // }
 
-let isTransitioning = false;
-
 function nextStep() {
   if (isTransitioning) return;
   isTransitioning = true;
 
   stepIndex++;
+
+  // ✅ PROGRESS EVENT (tik checkpoint'ai)
+  if ([2, 4, 6].includes(stepIndex)) {
+    trackQuizProgress(stepIndex);
+  }
+
   renderStep();
 
   setTimeout(() => {
     isTransitioning = false;
-  }, 300); // >= slideIn/slideOut trukmė
+  }, 300);
+}
+
+function shouldShowBack() {
+  const current = quizSteps[stepIndex];
+  // rodome tik kai yra kur grįžti ir kai esam normaliam klausime (ne loading/analysis/lead/thankyou)
+  return stepIndex > 0 && current && !HIDDEN_TYPES.includes(current.type);
+}
+
+function updateBackButton() {
+  if (!backBtn) return;
+  backBtn.classList.toggle('is-visible', shouldShowBack());
+}
+
+function prevStep() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
+  // einam atgal iki artimiausio "normalaus" žingsnio
+  do {
+    stepIndex--;
+  } while (stepIndex > 0 && HIDDEN_TYPES.includes(quizSteps[stepIndex].type));
+
+  renderStep();
+
+  setTimeout(() => {
+    isTransitioning = false;
+  }, 300);
 }
 
 
@@ -463,7 +523,7 @@ function submitLead(e) {
   const payload = {
     email: email,
     phone: phone,
-    quiz: answers,
+    quiz_answers: answers,
     source: 'corepetitus_quiz'
   };
 
@@ -479,7 +539,11 @@ function submitLead(e) {
   .then(data => {
     console.log('CRM RESPONSE:', data);
 
-    trackQuizLead();
+    trackQuizLead({
+  email: email,
+  phone: phone
+});
+
 
     slideOut(content, () => {
       nextStep(); // thank you

@@ -54,8 +54,9 @@ function trackQuizComplete() {
 /**
  * Lead submit
  */
-function trackQuizLead() {
-  trackEvent('quiz_lead');
+function trackQuizLead(data = {}) {
+  trackEvent('quiz_lead', data);
 }
+
 
 

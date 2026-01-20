@@ -16,44 +16,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css?v=20260135">
+  <link rel="stylesheet" href="css/style.css?v=20260139">
 
-  <!-- Google Tag Manager (jei naudos) -->
-  <!--
-  <script>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');
-  </script>
-  -->
+<!-- Google Tag Manager -->
+<script>!function(){"use strict";function l(e){for(var t=e,r=0,n=document.cookie.split(";");r<n.length;r++){var o=n[r].split("=");if(o[0].trim()===t)return o[1]}}function s(e){return localStorage.getItem(e)}function u(e){return window[e]}function A(e,t){e=document.querySelector(e);return t?null==e?void 0:e.getAttribute(t):null==e?void 0:e.textContent}var e=window,t=document,r="script",n="dataLayer",o="https://analytics.corepetitus.lt",a="https://load.analytics.corepetitus.lt",i="5udejhpkya",c="d8geor=CB1WNzwnSDMmTC1HXDpDElxLRUFODgtZAhYZFRgPEQ0VDBheBB4%3D",g="stapeUserId",v="",E="",d=!1;try{var d=!!g&&(m=navigator.userAgent,!!(m=new RegExp("Version/([0-9._]+)(.*Mobile)?.*Safari.*").exec(m)))&&16.4<=parseFloat(m[1]),f="stapeUserId"===g,I=d&&!f?function(e,t,r){void 0===t&&(t="");var n={cookie:l,localStorage:s,jsVariable:u,cssSelector:A},t=Array.isArray(t)?t:[t];if(e&&n[e])for(var o=n[e],a=0,i=t;a<i.length;a++){var c=i[a],c=r?o(c,r):o(c);if(c)return c}else console.warn("invalid uid source",e)}(g,v,E):void 0;d=d&&(!!I||f)}catch(e){console.error(e)}var m=e,g=(m[n]=m[n]||[],m[n].push({"gtm.start":(new Date).getTime(),event:"gtm.js"}),t.getElementsByTagName(r)[0]),v=I?"&bi="+encodeURIComponent(I):"",E=t.createElement(r),f=(d&&(i=8<i.length?i.replace(/([a-z]{8}$)/,"kp$1"):"kp"+i),!d&&a?a:o);E.async=!0,E.src=f+"/"+i+".js?"+c+v,null!=(e=g.parentNode)&&e.insertBefore(E,g)}();</script>
+<!-- End Google Tag Manager -->
+
 </head>
 
 <body>
 
-  <!-- GTM noscript (jei reikės) -->
-  <!--
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>
-  -->
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://load.analytics.corepetitus.lt/ns.html?id=GTM-WG5F74P" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
   <div class="quiz-wrapper">
 
     <!-- HEADER -->
     <header class="quiz-header">
-      <a style="text-align: center;" href="/"><img src="assets/images/logo.svg" class="logo" alt="Corepetitus"></a>
-
+    
+      <div class="header-row">
+        <!-- BACK -->
+        <button id="back-btn" class="back-btn" type="button" aria-label="Atgal">
+          ←
+        </button>
+    
+        <!-- LOGO (visada centre) -->
+        <a class="logo-link" href="/">
+          <img src="assets/images/logo.svg" class="logo" alt="Corepetitus">
+        </a>
+    
+        <!-- COUNTER (visada dešinėj) -->
+        <div class="step-counter">
+          <span id="step-current">1</span> / <span id="step-total">13</span>
+        </div>
+      </div>
+    
       <div class="progress-container">
         <div class="progress-bar"></div>
       </div>
-
-      <div class="step-counter">
-        <span id="step-current">1</span> / <span id="step-total">13</span>
-      </div>
+    
     </header>
+
 
     <!-- QUIZ CONTENT -->
     <main id="quiz-content"></main>
@@ -62,10 +66,10 @@
 
   <!-- Scripts -->
   <script src="js/config.js?v=20260131"></script>
-  <script src="js/events.js?v=20260131"></script>
+  <script src="js/events.js?v=20260132"></script>
   <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
   <script src="js/gsap.js?v=20260131"></script>
-  <script src="js/app.js?v=20260141"></script>
+  <script src="js/app.js?v=20260147"></script>
 
 </body>
 </html>
