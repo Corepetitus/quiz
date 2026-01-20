@@ -30,6 +30,11 @@ $payload = [
     'source' => 'corepetitus_quiz'
 ];
 
+$env = parse_ini_file('../../private/.env');
+foreach ($env as $key => $value) {
+    putenv("$key=$value");
+}
+
 $token = getenv('CRM_API_TOKEN') ?: 'YOUR_TOKEN_HERE';
 
 $ch = curl_init('https://app.corepetitus.lt/api/registration');
