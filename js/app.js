@@ -527,12 +527,9 @@ function submitLead(e) {
     source: 'corepetitus_quiz'
   };
 
-  fetch('https://app.corepetitus.lt/api/registration', {
+  fetch('/api/submit-quiz.php', {  // Your own server endpoint
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3Njg1Njc2NTUsImV4cCI6MTc3MjE2NzY1NSwicm9sZXMiOlsiUk9MRV9HVUFSRElBTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6Im1va2lueXNAZ21haWwuY29tIn0.LGGsu36ixzp4jrkfeXj9YrrfQFPZ05ciE6JpvIOqpL2eNKH-CvlJe_9W3InciixAygdavHDxN-tVr4MU90TKToWSzT_F4Mr-U3ci1aErwB4FevT6Nnv74-v42dO8rAvldnKx8KX5GuiWgKxXekFiZiIuo4TnFXjabupp3_e8LP94dQTHRz_-wQL9W5aGQ8-ghJ7rjD3OqgrP5mcJ60uu7zAmLt1jddfH0VkTElmIpty7NYeCsReGIWym0ryo87Y2ZUGuwPWxo5OfTdvmb-Jt8C5O2ZPAJLyyPJDDib750wwhJ9CEd_8U0M9U3jDUPc3tqJJ-ABU34xujA3njPbXAlA'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
   .then(res => res.json())
@@ -540,14 +537,14 @@ function submitLead(e) {
     console.log('CRM RESPONSE:', data);
 
     trackQuizLead({
-  email: email,
-  phone: phone
-});
-
+      email: email,
+      phone: phone
+    });
 
     slideOut(content, () => {
       nextStep(); // thank you
     });
+
   })
   .catch(err => {
     console.error('CRM ERROR:', err);
