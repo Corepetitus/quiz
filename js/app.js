@@ -523,7 +523,7 @@ async function submitLead(e) {
   const csrfResponse = await fetch('/api/csrf-token.php', {
     credentials: 'include'
   });
-  const { csrf_token } = await csrfResponse.json();
+  const csrf_token = await csrfResponse.json();
 
   const payload = {
     email: email,
