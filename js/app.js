@@ -551,6 +551,7 @@ async function submitLead(e) {
     });
 
     slideOut(content, () => {
+      alert('CRM RESPONSE');
       nextStep(); // thank you
     });
 
@@ -559,7 +560,6 @@ async function submitLead(e) {
     console.error('CRM ERROR:', err);
     alert('Įvyko klaida, bandykite dar kartą');
   });
-  alert('CRM RESPONSE:', data);
 }
 
 
