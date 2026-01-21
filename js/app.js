@@ -513,12 +513,17 @@ function renderLeadForm() {
    SUBMIT + THANK YOU
 ===================== */
 
-function submitLead(e) {
+async function submitLead(e) {
   e.preventDefault();
 
   const form = e.target;
   const email = form.querySelector('input[type="email"]').value;
   const phone = form.querySelector('input[type="tel"]').value;
+
+  const csrfResponse = await fetch('/api/csrf-token.php', {
+    credentials: 'include'
+  });
+  const { csrf_token } = await csrfResponse.json();
 
   const payload = {
     email: email,
@@ -529,7 +534,11 @@ function submitLead(e) {
 
   fetch('/api/submit-quiz.php', {  // Your own server endpoint
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json' ,
+      'X-CSRF-Token': csrf_token
+    },
+    credentials: 'include',
     body: JSON.stringify(payload)
   })
   .then(res => res.json())

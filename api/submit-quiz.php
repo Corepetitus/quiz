@@ -1,13 +1,33 @@
 <?php
+session_start();
+
+$allowed_origins = ['https://quiz.corepetitus.lt', 'https://www.quiz.corepetitus.lt'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Adjust for production
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
+
+if (in_array($origin, $allowed_origins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    // Log suspicious access attempts
+    error_log("Blocked CORS request from: " . $origin);
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     exit(json_encode(['error' => 'Method not allowed']));
+}
+
+$headers = getallheaders();
+$csrf_token = $headers['X-CSRF-Token'] ?? '';
+
+if (!isset($_SESSION['csrf_token']) ||
+    !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+    http_response_code(403);
+    exit(json_encode(['error' => 'Invalid CSRF token']));
 }
 
 $input = file_get_contents('php://input');
