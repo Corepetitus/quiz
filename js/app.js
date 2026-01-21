@@ -524,7 +524,7 @@ async function submitLead(e) {
     credentials: 'include'
   });
   const csrf_token = await csrfResponse.json();
-
+  alert('csrf_token: ' + csrf_token);
   const payload = {
     email: email,
     phone: phone,
