@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $headers = getallheaders();
-$csrf_token = $headers['X-CSRF-Token'] ?? '';
+$csrf_token = $headers['X-Csrf-Token'] ?? '';
 
 if (!isset($_SESSION['csrf_token']) ||
     !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
